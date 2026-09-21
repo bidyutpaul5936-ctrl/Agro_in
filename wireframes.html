@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroIn – Farmer Advisory Wireframes</title>
+  <meta name="description" content="Farmer-facing agri-advisory wireframes: crop diagnosis, soil reports, and seed exchange." />
+  <style>
+    /* ─────────────────────────────────────────
+       DESIGN TOKENS
+    ───────────────────────────────────────── */
+    :root {
+      --green-dark:   #1a5c2a;
+      --green-mid:    #2d8a45;
+      --green-light:  #4cb86a;
+      --green-pale:   #d4edda;
+      --amber:        #e8a000;
+      --amber-pale:   #fff3cd;
+      --red:          #c0392b;
+      --red-pale:     #fde8e6;
+      --sky:          #1976d2;
+      --sky-pale:     #e3f2fd;
+      --text-primary: #1a1a1a;
+      --text-muted:   #555;
+      --border:       #c8d5c9;
+      --bg:           #f4f7f4;
+      --card:         #ffffff;
+      --radius:       12px;
+      --radius-sm:    8px;
+      --shadow:       0 2px 10px rgba(0,0,0,0.08);
+      --tap-min:      52px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 17px; scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   "Helvetica Neue", Arial, sans-serif;
+      background: #e8ede8;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font: inherit; border: none; }
+    ul { list-style: none; }
+
+    /* ─── SHELL HEADER ─── */
+    .shell-header {
+      background: var(--green-dark);
+      color: #fff;
+      padding: 14px 20px 0;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .shell-title {
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.75;
+      margin-bottom: 4px;
+    }
+    .shell-logo { font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+    .tab-row {
+      display: flex;
+      overflow-x: auto;
+      gap: 4px;
+      scrollbar-width: none;
+    }
+    .tab-row::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex: 0 0 auto;
+      background: transparent;
+      color: rgba(255,255,255,0.65);
+      border: none;
+      padding: 10px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: #fff; }
+    .tab-btn.active { color: #fff; border-bottom-color: var(--green-light); }
+
+    /* ─── SCREENS CONTAINER ─── */
+    .screens-container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 0 80px;
+      min-height: calc(100vh - 60px);
+    }
+    .screen {
+      display: none;
+      background: var(--bg);
+      min-height: calc(100vh - 60px);
+      padding-bottom: 90px;
+      width: 100%;
+    }
+    .screen.active { display: block; }
+
+    /* ─── APP BAR ─── */
+    .app-bar {
+      background: var(--green-dark);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      position: sticky;
+      top: 53px;
+      z-index: 50;
+    }
+    .app-bar-back {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+    .app-bar-title { font-size: 1.05rem; font-weight: 700; flex: 1; }
+    .app-bar-lang {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+    }
+
+    /* ─── CARD ─── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin: 12px 14px;
+    }
+    .card-title { font-size: 1rem; font-weight: 700; color: var(--green-dark); margin-bottom: 8px; }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px;
+      min-height: var(--tap-min);
+      border-radius: var(--radius);
+      font-size: 1.05rem; font-weight: 700;
+      padding: 14px 20px;
+      width: 100%;
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--green-mid); color: #fff; box-shadow: 0 4px 14px rgba(45,138,69,0.35); }
+    .btn-primary:hover { background: var(--green-dark); }
+    .btn-secondary { background: var(--card); color: var(--green-dark); border: 2px solid var(--green-mid); }
+    .btn-secondary:hover { background: var(--green-pale); }
+    .btn-amber { background: var(--amber); color: #fff; box-shadow: 0 4px 14px rgba(232,160,0,0.35); }
+    .btn-sky { background: var(--sky); color: #fff; box-shadow: 0 4px 14px rgba(25,118,210,0.35); }
+
+    /* ─── ICON CIRCLE ─── */
+    .icon-circle {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+    }
+    .ic-green { background: var(--green-pale); }
+    .ic-amber { background: var(--amber-pale); }
+    .ic-red   { background: var(--red-pale); }
+    .ic-sky   { background: var(--sky-pale); }
+
+    /* ─── PILLS ─── */
+    .pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 0.78rem; font-weight: 700;
+    }
+    .pill-good  { background: var(--green-pale); color: var(--green-dark); }
+    .pill-warn  { background: var(--amber-pale); color: #7a5000; }
+    .pill-bad   { background: var(--red-pale);   color: var(--red); }
+
+    /* ─── BOTTOM NAV ─── */
+    .bottom-nav {
+      position: fixed; bottom: 0;
+      left: 50%; transform: translateX(-50%);
+      width: 100%;
+      max-width: 1280px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      z-index: 200;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+    }
+    .nav-item {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 10px 6px 8px;
+      font-size: 0.68rem; color: var(--text-muted);
+      min-height: var(--tap-min); gap: 4px;
+      transition: color 0.15s;
+      background: none; border: none;
+    }
+    .nav-item .nav-icon { font-size: 1.4rem; line-height: 1; }
+    .nav-item.active { color: var(--green-dark); font-weight: 700; }
+    .nav-item.active .nav-icon { transform: scale(1.15); }
+
+    /* ─── SECTION LABEL ─── */
+    .section-label {
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted);
+      padding: 14px 16px 4px;
+    }
+
+    /* ─── ANNOTATION ─── */
+    .annotation {
+      background: #fffbe6; border: 1.5px dashed #bfa800; color: #7a6200;
+      border-radius: var(--radius-sm);
+      padding: 6px 12px; font-size: 0.75rem;
+      margin: 6px 14px;
+      display: flex; gap: 6px;
+    }
+    .annotation::before { content: "✏️"; flex-shrink: 0; }
+
+    /* ══ SCREEN 1 – HOME ══ */
+    .hero {
+      background: linear-gradient(145deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: #fff; padding: 32px 20px 28px; text-align: center;
+    }
+    .hero-emoji { font-size: 3.5rem; margin-bottom: 8px; }
+    .hero-title { font-size: 1.7rem; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+    .hero-sub { font-size: 0.95rem; opacity: 0.85; }
+    .hero-weather {
+      margin-top: 16px;
+      background: rgba(255,255,255,0.15);
+      border-radius: var(--radius); padding: 10px 16px;
+      display: flex; align-items: center; gap: 10px; text-align: left;
+    }
+    .hero-weather-icon { font-size: 2rem; }
+    .hero-weather-temp { font-size: 1.2rem; font-weight: 700; }
+    .hero-weather-text { font-size: 0.85rem; }
+
+    .primary-actions {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; padding: 16px 14px;
+    }
+    .action-tile {
+      background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+      padding: 20px 14px; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      border: 2px solid transparent;
+      transition: border-color 0.15s, transform 0.12s;
+      min-height: 120px; justify-content: center;
+    }
+    .action-tile:hover { border-color: var(--green-mid); transform: translateY(-2px); }
+    .action-tile-icon { font-size: 2.5rem; }
+    .action-tile-label { font-size: 0.95rem; font-weight: 700; color: var(--green-dark); }
+    .action-tile-sub { font-size: 0.75rem; color: var(--text-muted); }
+
+    .alert-strip {
+      background: var(--amber-pale); border-left: 4px solid var(--amber);
+      padding: 12px 14px; margin: 0 14px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-size: 0.88rem;
+    }
+    .alert-strip strong { color: #7a5000; }
+
+    .recent-list { margin: 0 14px; }
+    .recent-item {
+      background: var(--card); border-radius: var(--radius-sm);
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; margin-bottom: 8px; box-shadow: var(--shadow);
+    }
+    .recent-item-info { flex: 1; }
+    .recent-item-title { font-size: 0.9rem; font-weight: 600; }
+    .recent-item-date { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* ══ SCREEN 2 – PHOTO UPLOAD ══ */
+    .upload-hero {
+      background: var(--green-pale); padding: 20px 16px; text-align: center;
+    }
+    .upload-hero-title { font-size: 1.25rem; font-weight: 700; color: var(--green-dark); }
+    .upload-hero-sub { font-size: 0.88rem; color: var(--text-muted); margin-top: 4px; }
+
+    .steps-strip {
+      display: flex; align-items: center; justify-content: center;
+      padding: 10px 16px; background: var(--card); border-bottom: 1px solid var(--border);
+    }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 700; flex-shrink: 0;
+    }
+    .step-dot.active { background: var(--green-dark); color: #fff; }
+    .step-dot.todo   { background: var(--border); color: var(--text-muted); }
+    .step-line { flex: 1; height: 2px; background: var(--border); }
+    .steps-labels {
+      display: flex; justify-content: space-around;
+      padding: 0 16px 8px; background: var(--card);
+    }
+    .step-label { font-size: 0.65rem; color: var(--text-muted); text-align: center; margin-top: 4px; }
+
+    .dropzone {
+      border: 2.5px dashed var(--green-mid); border-radius: var(--radius);
+      background: var(--green-pale); min-height: 200px;
+      margin: 14px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px; padding: 24px; text-align: center;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .dropzone:hover { background: #c3e6cb; }
+    .dropzone-icon { font-size: 3rem; }
+    .dropzone-title { font-size: 1rem; font-weight: 700; color: var(--green-dark); }
+    .dropzone-sub { font-size: 0.82rem; color: var(--text-muted); }
+    .dropzone-or {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--text-muted); font-size: 0.82rem; width: 100%;
+    }
+    .dropzone-or::before, .dropzone-or::after {
+      content: ""; flex: 1; height: 1px; background: var(--border);
+    }
+
+    .camera-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 14px; }
+
+    .tip-box {
+      background: var(--sky-pale); border-left: 4px solid var(--sky);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 12px 14px; margin: 12px 14px;
+      font-size: 0.84rem; color: #0d3b6e;
+    }
+    .tip-box strong { display: block; margin-bottom: 4px; }
+    .tip-list { padding-left: 4px; }
+    .tip-list li { padding: 3px 0; }
+    .tip-list li::before { content: "• "; color: var(--sky); font-weight: 700; }
+
+    .preview-box {
+      background: #eee; border-radius: var(--radius); margin: 14px;
+      height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); font-size: 0.88rem;
+      border: 1px solid var(--border);
+      flex-direction: column; gap: 8px;
+    }
+    .preview-box-icon { font-size: 2.5rem; opacity: 0.4; }
+
+    /* ══ SCREEN 3 – RESULT ══ */
+    .result-hero {
+      background: var(--red-pale); border-bottom: 3px solid var(--red);
+      padding: 20px 16px; display: flex; align-items: center; gap: 14px;
+    }
+    .result-hero-icon { font-size: 3rem; }
+    .result-hero-crop { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 2px; }
+    .result-hero-disease { font-size: 1.25rem; font-weight: 800; color: var(--red); line-height: 1.2; }
+
+    .confidence-bar-wrap { padding: 4px 0; }
+    .confidence-label {
+      display: flex; justify-content: space-between;
+      font-size: 0.82rem; margin-bottom: 4px; color: var(--text-muted);
+    }
+    .confidence-label strong { color: var(--text-primary); font-size: 1rem; }
+    .bar-track { background: var(--border); border-radius: 99px; height: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--amber), var(--red)); width: 82%; }
+
+    .meta-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .meta-chip {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 20px;
+      padding: 5px 12px; font-size: 0.78rem; display: flex; align-items: center; gap: 5px;
+    }
+
+    .treatment-steps { margin: 0 14px; }
+    .step-card {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: var(--card); border-radius: var(--radius-sm);
+      padding: 14px; margin-bottom: 8px; box-shadow: var(--shadow);
+      border-left: 4px solid transparent;
+    }
+    .step-card.urgent  { border-left-color: var(--red); }
+    .step-card.soon    { border-left-color: var(--amber); }
+    .step-card.routine { border-left-color: var(--green-mid); }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem; flex-shrink: 0; color: #fff;
+    }
+    .step-num.urgent  { background: var(--red); }
+    .step-num.soon    { background: var(--amber); }
+    .step-num.routine { background: var(--green-mid); }
+    .step-body-title  { font-size: 0.9rem; font-weight: 700; margin-bottom: 3px; }
+    .step-body-desc   { font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; }
+
+    .expert-strip {
+      background: var(--sky-pale); margin: 10px 14px;
+      border-radius: var(--radius-sm); padding: 12px 14px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.85rem; color: #0d3b6e;
+    }
+    .expert-strip-icon { font-size: 1.8rem; }
+
+    /* ══ SCREEN 4 – SOIL ══ */
+    .soil-hero {
+      background: linear-gradient(135deg, #7c4d00 0%, var(--amber) 100%);
+      color: #fff; padding: 20px 16px;
+    }
+    .soil-hero-row { display: flex; justify-content: space-between; align-items: flex-start; }
+    .soil-hero-title { font-size: 1.2rem; font-weight: 800; }
+    .soil-hero-date  { font-size: 0.78rem; opacity: 0.8; margin-top: 4px; }
+    .soil-hero-field {
+      background: rgba(255,255,255,0.2); border-radius: 20px;
+      padding: 5px 14px; font-size: 0.78rem; font-weight: 700;
+    }
+
+    .soil-overall {
+      background: var(--card); margin: 12px 14px; border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 16px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .soil-score-circle {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: conic-gradient(var(--amber) 0% 62%, var(--border) 62%);
+      flex-shrink: 0; position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .soil-score-inner {
+      width: 54px; height: 54px; border-radius: 50%;
+      background: var(--card); position: absolute;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .soil-score-num   { font-size: 1.1rem; font-weight: 800; color: var(--amber); }
+    .soil-score-label { font-size: 0.55rem; color: var(--text-muted); }
+    .soil-overall-text { flex: 1; }
+    .soil-overall-grade { font-size: 1.1rem; font-weight: 700; color: #7a5000; }
+    .soil-overall-desc  { font-size: 0.82rem; color: var(--text-muted); margin-top: 3px; }
+
+    .soil-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 14px; }
+    .soil-metric {
+      background: var(--card); border-radius: var(--radius-sm); padding: 14px;
+      box-shadow: var(--shadow); border-top: 4px solid var(--border);
+    }
+    .soil-metric.good { border-top-color: var(--green-mid); }
+    .soil-metric.warn { border-top-color: var(--amber); }
+    .soil-metric.bad  { border-top-color: var(--red); }
+    .soil-metric-label {
+      font-size: 0.72rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;
+    }
+    .soil-metric-value { font-size: 1.6rem; font-weight: 800; line-height: 1; }
+    .soil-metric.good .soil-metric-value { color: var(--green-dark); }
+    .soil-metric.warn .soil-metric-value { color: #7a5000; }
+    .soil-metric.bad  .soil-metric-value { color: var(--red); }
+    .soil-metric-unit { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px; }
+
+    .gauge-track { background: var(--border); border-radius: 99px; height: 7px; margin: 6px 0 4px; }
+    .gauge-fill { height: 100%; border-radius: 99px; }
+    .gauge-fill.good { background: var(--green-mid); }
+    .gauge-fill.warn { background: var(--amber); }
+    .gauge-fill.bad  { background: var(--red); }
+    .gauge-zones { display: flex; justify-content: space-between; font-size: 0.6rem; color: var(--text-muted); margin-top: 2px; }
+
+    .soil-tip {
+      background: var(--amber-pale); border: 1.5px solid var(--amber);
+      border-radius: var(--radius-sm); margin: 10px 14px; padding: 12px 14px;
+    }
+    .soil-tip-title { font-size: 0.85rem; font-weight: 700; color: #7a5000; margin-bottom: 6px; }
+    .soil-tip-list  { font-size: 0.82rem; color: #7a5000; }
+    .soil-tip-list li { padding: 2px 0; }
+    .soil-tip-list li::before { content: "→ "; font-weight: 700; }
+
+    .history-row { display: flex; gap: 8px; padding: 0 14px; overflow-x: auto; scrollbar-width: none; }
+    .history-row::-webkit-scrollbar { display: none; }
+    .history-chip {
+      flex: 0 0 auto; background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 8px 14px;
+      font-size: 0.78rem; text-align: center;
+    }
+    .history-chip-date  { color: var(--text-muted); font-size: 0.7rem; }
+    .history-chip-score { font-weight: 700; color: var(--green-dark); }
+
+    /* ══ SCREEN 5 – SEEDS ══ */
+    .search-bar-wrap { background: var(--green-dark); padding: 10px 14px 14px; }
+    .search-bar {
+      background: var(--card); border-radius: var(--radius);
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; height: var(--tap-min); box-shadow: var(--shadow);
+    }
+    .search-icon  { font-size: 1.2rem; color: var(--text-muted); }
+    .search-input { flex: 1; border: none; outline: none; font-size: 0.95rem; color: var(--text-muted); background: transparent; }
+    .search-filter-btn {
+      background: var(--green-pale); border: none; border-radius: var(--radius-sm);
+      padding: 6px 10px; font-size: 0.78rem; color: var(--green-dark); font-weight: 600;
+    }
+
+    .filter-chips { display: flex; gap: 8px; padding: 10px 14px; overflow-x: auto; scrollbar-width: none; }
+    .filter-chips::-webkit-scrollbar { display: none; }
+    .fchip {
+      flex: 0 0 auto; background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 6px 14px; font-size: 0.8rem;
+      color: var(--text-primary); white-space: nowrap;
+      min-height: 36px; display: flex; align-items: center;
+    }
+    .fchip.active { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+
+    .seed-stats { display: flex; gap: 10px; padding: 0 14px 10px; }
+    .seed-stat-box {
+      flex: 1; background: var(--card); border-radius: var(--radius-sm);
+      padding: 10px; text-align: center; box-shadow: var(--shadow);
+    }
+    .seed-stat-num   { font-size: 1.2rem; font-weight: 800; color: var(--green-dark); }
+    .seed-stat-label { font-size: 0.68rem; color: var(--text-muted); }
+
+    .seed-card {
+      background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+      margin: 0 14px 12px; overflow: hidden; border: 1px solid var(--border);
+    }
+    .seed-card-header {
+      background: var(--green-pale); padding: 14px;
+      display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border);
+    }
+    .seed-emoji      { font-size: 2.2rem; }
+    .seed-header-info { flex: 1; }
+    .seed-name       { font-size: 1rem; font-weight: 700; color: var(--green-dark); }
+    .seed-variety    { font-size: 0.78rem; color: var(--text-muted); }
+    .seed-badge {
+      background: var(--green-dark); color: #fff;
+      border-radius: var(--radius-sm); padding: 4px 10px;
+      font-size: 0.72rem; font-weight: 700;
+    }
+    .seed-card-body { padding: 14px; }
+    .seed-detail-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
+    .seed-detail-label { color: var(--text-muted); }
+    .seed-detail-val   { font-weight: 600; }
+    .seed-card-footer {
+      padding: 10px 14px; background: var(--bg);
+      border-top: 1px solid var(--border); display: flex; gap: 8px;
+    }
+    .seed-card-footer .btn { font-size: 0.85rem; min-height: 44px; }
+
+    /* ─── RESPONSIVE & FULL SCREEN ─── */
+    @media (min-width: 640px) {
+      .primary-actions {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        padding: 20px 24px;
+      }
+      .card {
+        margin: 16px 24px;
+      }
+      .annotation {
+        margin: 8px 24px;
+      }
+      .section-label {
+        padding: 16px 24px 6px;
+      }
+      .seed-card {
+        margin: 0 24px 16px;
+      }
+      .treatment-steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 14px;
+        padding: 0 24px;
+      }
+      .soil-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 14px;
+        padding: 0 24px;
+      }
+    }
+
+    @media (min-width: 960px) {
+      .hero {
+        padding: 40px 32px;
+        border-radius: var(--radius);
+        margin: 16px 24px 0;
+      }
+      .app-bar {
+        padding: 16px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Shell header / tab switcher -->
+<header class="shell-header">
+  <div class="shell-title">Wireframe Screens</div>
+  <div class="shell-logo">🌾 AgroIn – Agri Advisory</div>
+  <div class="tab-row" role="tablist">
+    <button class="tab-btn active" id="tab-home"   onclick="showScreen('home')"   role="tab">① Home</button>
+    <button class="tab-btn"        id="tab-upload" onclick="showScreen('upload')" role="tab">② Photo Upload</button>
+    <button class="tab-btn"        id="tab-result" onclick="showScreen('result')" role="tab">③ Result</button>
+    <button class="tab-btn"        id="tab-soil"   onclick="showScreen('soil')"   role="tab">④ Soil Report</button>
+    <button class="tab-btn"        id="tab-seeds"  onclick="showScreen('seeds')"  role="tab">⑤ Seed Exchange</button>
+  </div>
+</header>
+
+<main class="screens-container" role="main">
+
+  <!-- ════ SCREEN 1 – HOME ════ -->
+  <section class="screen active" id="screen-home" aria-label="Home Screen">
+    <div class="hero">
+      <div class="hero-emoji">🌱</div>
+      <h1 class="hero-title">Namaste, Ramesh!</h1>
+      <p class="hero-sub">Your crops need attention today</p>
+      <div class="hero-weather">
+        <span class="hero-weather-icon">☀️</span>
+        <div>
+          <div class="hero-weather-temp">34°C – Pune</div>
+          <div class="hero-weather-text">Good weather for spraying. Low wind.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation">Screen 1: Home. Primary actions visible without scrolling. Tap targets ≥52px.</div>
+
+    <p class="section-label">What do you need today?</p>
+    <div class="primary-actions">
+      <button class="action-tile" id="btn-diagnose" onclick="showScreen('upload')" aria-label="Diagnose my crop">
+        <span class="action-tile-icon">🔬</span>
+        <span class="action-tile-label">Diagnose My Crop</span>
+        <span class="action-tile-sub">Take or upload a photo</span>
+      </button>
+      <button class="action-tile" id="btn-soil-tile" onclick="showScreen('soil')" aria-label="View soil report">
+        <span class="action-tile-icon">🧪</span>
+        <span class="action-tile-label">View Soil Report</span>
+        <span class="action-tile-sub">NPK, pH &amp; moisture</span>
+      </button>
+      <button class="action-tile" id="btn-seeds-tile" onclick="showScreen('seeds')" aria-label="Seed exchange">
+        <span class="action-tile-icon">🫘</span>
+        <span class="action-tile-label">Seed Exchange</span>
+        <span class="action-tile-sub">Buy, sell, swap seeds</span>
+      </button>
+      <button class="action-tile" id="btn-weather" aria-label="Weather forecast">
+        <span class="action-tile-icon">🌦️</span>
+        <span class="action-tile-label">Weather</span>
+        <span class="action-tile-sub">7-day forecast</span>
+      </button>
+    </div>
+
+    <div class="alert-strip" role="alert">
+      ⚠️ <strong>Pest Alert:</strong> Fall armyworm reported 5 km away. Check your maize crop.
+    </div>
+
+    <p class="section-label">Recent Activity</p>
+    <ul class="recent-list">
+      <li class="recent-item">
+        <div class="icon-circle ic-red">🦠</div>
+        <div class="recent-item-info">
+          <div class="recent-item-title">Leaf Blight Detected – Tomato</div>
+          <div class="recent-item-date">2 days ago · Treatment started</div>
+        </div>
+        <span class="pill pill-warn">Ongoing</span>
+      </li>
+      <li class="recent-item">
+        <div class="icon-circle ic-green">🧪</div>
+        <div class="recent-item-info">
+          <div class="recent-item-title">Soil Test – Field B</div>
+          <div class="recent-item-date">5 days ago</div>
+        </div>
+        <span class="pill pill-good">Done</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ════ SCREEN 2 – PHOTO UPLOAD ════ -->
+  <section class="screen" id="screen-upload" aria-label="Photo Upload Screen">
+    <div class="app-bar">
+      <button class="app-bar-back" onclick="showScreen('home')" aria-label="Go back">←</button>
+      <span class="app-bar-title">Diagnose My Crop</span>
+      <button class="app-bar-lang" aria-label="Change language">हिंदी</button>
+    </div>
+
+    <div class="steps-strip" aria-label="Progress steps">
+      <div class="step-dot active">1</div>
+      <div class="step-line"></div>
+      <div class="step-dot todo">2</div>
+      <div class="step-line"></div>
+      <div class="step-dot todo">3</div>
+    </div>
+    <div class="steps-labels">
+      <span class="step-label">📷 Photo</span>
+      <span class="step-label">🌾 Crop</span>
+      <span class="step-label">✅ Result</span>
+    </div>
+
+    <div class="annotation">Screen 2: Upload. Drag-drop + camera button for mobile. Preview area shown.</div>
+
+    <div class="upload-hero">
+      <div class="upload-hero-title">Take or Upload a Photo</div>
+      <div class="upload-hero-sub">Show the sick leaf or plant clearly</div>
+    </div>
+
+    <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Drop photo here or tap to browse">
+      <span class="dropzone-icon">📂</span>
+      <span class="dropzone-title">Drop photo here</span>
+      <span class="dropzone-sub">or tap to choose from gallery</span>
+      <div class="dropzone-or">or</div>
+    </div>
+
+    <div class="camera-btns">
+      <button class="btn btn-primary" id="btn-camera" aria-label="Take photo with camera">
+        📷 Take Photo
+      </button>
+      <button class="btn btn-secondary" id="btn-gallery" aria-label="Choose from gallery">
+        🖼️ Gallery
+      </button>
+    </div>
+
+    <div class="preview-box" aria-label="Photo preview area">
+      <span class="preview-box-icon">🖼️</span>
+      <span>Photo preview will appear here</span>
+    </div>
+
+    <div class="tip-box" role="note">
+      <strong>📌 Tips for a good photo:</strong>
+      <ul class="tip-list">
+        <li>Show the sick leaf up close</li>
+        <li>Take in natural daylight</li>
+        <li>Avoid blurry or dark photos</li>
+        <li>Include 2–3 leaves if possible</li>
+      </ul>
+    </div>
+
+    <div style="padding: 0 14px 14px;">
+      <button class="btn btn-primary" id="btn-analyze" onclick="showScreen('result')" aria-label="Analyse photo">
+        🔍 Analyse Now
+      </button>
+    </div>
+  </section>
+
+  <!-- ════ SCREEN 3 – DIAGNOSIS RESULT ════ -->
+  <section class="screen" id="screen-result" aria-label="Diagnosis Result Screen">
+    <div class="app-bar">
+      <button class="app-bar-back" onclick="showScreen('upload')" aria-label="Go back">←</button>
+      <span class="app-bar-title">Diagnosis Result</span>
+      <button class="app-bar-lang" aria-label="Share result">⬆️ Share</button>
+    </div>
+
+    <div class="annotation">Screen 3: Result — crop, disease, confidence bar, colour-coded treatment steps.</div>
+
+    <div class="result-hero" role="region" aria-label="Disease summary">
+      <span class="result-hero-icon">🍅</span>
+      <div>
+        <div class="result-hero-crop">🌾 Crop: Tomato</div>
+        <div class="result-hero-disease">Late Blight Disease</div>
+        <div style="margin-top:6px;"><span class="pill pill-bad">⚠️ High Risk</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">How sure are we?</div>
+      <div class="confidence-bar-wrap">
+        <div class="confidence-label">
+          <span>Confidence Level</span>
+          <strong>82%</strong>
+        </div>
+        <div class="bar-track" role="progressbar" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100">
+          <div class="bar-fill" style="width:82%;"></div>
+        </div>
+      </div>
+      <div class="meta-row" style="margin-top: 10px;">
+        <span class="meta-chip">🦠 Pathogen: Fungal</span>
+        <span class="meta-chip">📅 Detected: Today</span>
+        <span class="meta-chip">🌡️ Favoured by: Wet weather</span>
+      </div>
+    </div>
+
+    <p class="section-label">Treatment Steps</p>
+    <div class="treatment-steps" role="list">
+      <div class="step-card urgent" role="listitem">
+        <div class="step-num urgent">1</div>
+        <div>
+          <div class="step-body-title">🚨 Remove affected leaves NOW</div>
+          <div class="step-body-desc">Pull off all spotted or yellowing leaves. Put them in a bag, not on the ground.</div>
+        </div>
+      </div>
+      <div class="step-card soon" role="listitem">
+        <div class="step-num soon">2</div>
+        <div>
+          <div class="step-body-title">💊 Apply fungicide within 2 days</div>
+          <div class="step-body-desc">Use Mancozeb or Chlorothalonil. Mix 2g per litre of water. Spray in the evening.</div>
+        </div>
+      </div>
+      <div class="step-card soon" role="listitem">
+        <div class="step-num soon">3</div>
+        <div>
+          <div class="step-body-title">💧 Avoid overhead watering</div>
+          <div class="step-body-desc">Water at the base only. Wet leaves help the fungus spread faster.</div>
+        </div>
+      </div>
+      <div class="step-card routine" role="listitem">
+        <div class="step-num routine">4</div>
+        <div>
+          <div class="step-body-title">🔁 Check again after 5 days</div>
+          <div class="step-body-desc">Take a new photo to see if the disease has stopped spreading.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="expert-strip" role="complementary">
+      <span class="expert-strip-icon">👨‍🌾</span>
+      <div>
+        <strong>Need more help?</strong><br>
+        <span style="font-size:0.8rem;">Talk to a Krishi Mitra expert for free. Available 9am – 6pm.</span>
+      </div>
+    </div>
+    <div style="padding: 0 14px 14px;">
+      <button class="btn btn-sky" id="btn-expert" aria-label="Call an expert for free">
+        📞 Call Expert (Free)
+      </button>
+    </div>
+  </section>
+
+  <!-- ════ SCREEN 4 – SOIL REPORT ════ -->
+  <section class="screen" id="screen-soil" aria-label="Soil Report Screen">
+    <div class="app-bar">
+      <button class="app-bar-back" onclick="showScreen('home')" aria-label="Go back">←</button>
+      <span class="app-bar-title">Soil Report</span>
+      <button class="app-bar-lang" aria-label="Download PDF">⬇️ PDF</button>
+    </div>
+
+    <div class="annotation">Screen 4: Soil dashboard — NPK/pH/moisture with Good/Warn/Bad colour coding.</div>
+
+    <div class="soil-hero">
+      <div class="soil-hero-row">
+        <div>
+          <div class="soil-hero-title">Field A – Kharif 2026</div>
+          <div class="soil-hero-date">Tested: 15 Sep 2026 · Lab: Agro Lab Pune</div>
+        </div>
+        <div class="soil-hero-field">1.2 acres</div>
+      </div>
+    </div>
+
+    <div class="soil-overall" role="region" aria-label="Overall soil health score">
+      <div class="soil-score-circle" aria-label="62 out of 100">
+        <div class="soil-score-inner">
+          <span class="soil-score-num">62</span>
+          <span class="soil-score-label">/ 100</span>
+        </div>
+      </div>
+      <div class="soil-overall-text">
+        <div class="soil-overall-grade">⚠️ Average Soil Health</div>
+        <div class="soil-overall-desc">Nitrogen is low. Add organic matter before next sowing.</div>
+        <div style="margin-top:6px;"><span class="pill pill-warn">Needs Attention</span></div>
+      </div>
+    </div>
+
+    <p class="section-label">Key Readings</p>
+    <div class="soil-grid" role="list">
+      <div class="soil-metric bad" role="listitem" aria-label="Nitrogen: Low">
+        <div class="soil-metric-label">Nitrogen (N)</div>
+        <div class="soil-metric-value">120</div>
+        <div class="soil-metric-unit">kg/ha</div>
+        <div class="gauge-track"><div class="gauge-fill bad" style="width:35%;"></div></div>
+        <div class="gauge-zones"><span>0</span><span>250</span><span>500</span></div>
+        <span class="pill pill-bad" style="margin-top:6px;">🔴 Low</span>
+      </div>
+      <div class="soil-metric good" role="listitem" aria-label="Phosphorus: Good">
+        <div class="soil-metric-label">Phosphorus (P)</div>
+        <div class="soil-metric-value">28</div>
+        <div class="soil-metric-unit">kg/ha</div>
+        <div class="gauge-track"><div class="gauge-fill good" style="width:70%;"></div></div>
+        <div class="gauge-zones"><span>0</span><span>20</span><span>40</span></div>
+        <span class="pill pill-good" style="margin-top:6px;">🟢 Good</span>
+      </div>
+      <div class="soil-metric warn" role="listitem" aria-label="Potassium: Medium">
+        <div class="soil-metric-label">Potassium (K)</div>
+        <div class="soil-metric-value">165</div>
+        <div class="soil-metric-unit">kg/ha</div>
+        <div class="gauge-track"><div class="gauge-fill warn" style="width:55%;"></div></div>
+        <div class="gauge-zones"><span>0</span><span>150</span><span>300</span></div>
+        <span class="pill pill-warn" style="margin-top:6px;">🟡 Medium</span>
+      </div>
+      <div class="soil-metric good" role="listitem" aria-label="pH: Good">
+        <div class="soil-metric-label">Soil pH</div>
+        <div class="soil-metric-value">6.8</div>
+        <div class="soil-metric-unit">neutral</div>
+        <div class="gauge-track"><div class="gauge-fill good" style="width:68%;"></div></div>
+        <div class="gauge-zones"><span>4</span><span>7</span><span>9</span></div>
+        <span class="pill pill-good" style="margin-top:6px;">🟢 Good</span>
+      </div>
+      <div class="soil-metric warn" role="listitem" aria-label="Moisture: Slightly Dry" style="grid-column: span 2;">
+        <div class="soil-metric-label">Moisture</div>
+        <div style="display:flex;align-items:baseline;gap:6px;">
+          <div class="soil-metric-value">42</div>
+          <div class="soil-metric-unit">% volumetric</div>
+        </div>
+        <div class="gauge-track"><div class="gauge-fill warn" style="width:55%;"></div></div>
+        <div class="gauge-zones"><span>0%</span><span>40%</span><span>80%</span></div>
+        <span class="pill pill-warn" style="margin-top:6px;">🟡 Slightly Dry</span>
+      </div>
+    </div>
+
+    <div class="soil-tip" role="region" aria-label="Recommendations">
+      <div class="soil-tip-title">💡 Recommendations for this season:</div>
+      <ul class="soil-tip-list">
+        <li>Add 2 bags of Urea (46% N) per acre before sowing</li>
+        <li>Irrigate once more this week</li>
+        <li>No extra phosphorus needed</li>
+      </ul>
+    </div>
+
+    <p class="section-label">Past Tests</p>
+    <div class="history-row" role="list">
+      <div class="history-chip" role="listitem"><div class="history-chip-date">Mar 2026</div><div class="history-chip-score">58/100</div></div>
+      <div class="history-chip" role="listitem"><div class="history-chip-date">Oct 2025</div><div class="history-chip-score">71/100</div></div>
+      <div class="history-chip" role="listitem"><div class="history-chip-date">Mar 2025</div><div class="history-chip-score">65/100</div></div>
+      <div class="history-chip" role="listitem"><div class="history-chip-date">Sep 2024</div><div class="history-chip-score">60/100</div></div>
+    </div>
+
+    <div style="padding: 12px 14px;">
+      <button class="btn btn-amber" id="btn-new-test" aria-label="Request new soil test">
+        🧪 Request New Soil Test
+      </button>
+    </div>
+  </section>
+
+  <!-- ════ SCREEN 5 – SEED EXCHANGE ════ -->
+  <section class="screen" id="screen-seeds" aria-label="Seed Exchange Screen">
+    <div class="app-bar">
+      <button class="app-bar-back" onclick="showScreen('home')" aria-label="Go back">←</button>
+      <span class="app-bar-title">Seed Exchange</span>
+      <button class="app-bar-lang" aria-label="Post a listing">➕ Post</button>
+    </div>
+
+    <div class="annotation">Screen 5: Seed exchange — filter chips, listing cards, Sell/Swap/Free badges.</div>
+
+    <div class="search-bar-wrap">
+      <div class="search-bar" role="search">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" type="text" placeholder="Search seeds, crops…" aria-label="Search seeds" readonly />
+        <button class="search-filter-btn" aria-label="Filter">⚙️ Filter</button>
+      </div>
+    </div>
+
+    <div class="filter-chips" role="group" aria-label="Category filters">
+      <button class="fchip active" id="fchip-all"    aria-pressed="true">All</button>
+      <button class="fchip"        id="fchip-veg"    aria-pressed="false">🥦 Vegetables</button>
+      <button class="fchip"        id="fchip-grain"  aria-pressed="false">🌾 Grains</button>
+      <button class="fchip"        id="fchip-fruit"  aria-pressed="false">🍎 Fruits</button>
+      <button class="fchip"        id="fchip-free"   aria-pressed="false">🤝 Free/Swap</button>
+      <button class="fchip"        id="fchip-nearby" aria-pressed="false">📍 Nearby</button>
+    </div>
+
+    <div class="seed-stats" aria-label="Listing stats">
+      <div class="seed-stat-box"><div class="seed-stat-num">148</div><div class="seed-stat-label">Listings</div></div>
+      <div class="seed-stat-box"><div class="seed-stat-num">63</div><div class="seed-stat-label">Farmers</div></div>
+      <div class="seed-stat-box"><div class="seed-stat-num">12 km</div><div class="seed-stat-label">Nearest</div></div>
+    </div>
+
+    <!-- Card 1 -->
+    <article class="seed-card" aria-label="Hybrid Tomato Seeds listing">
+      <div class="seed-card-header">
+        <span class="seed-emoji">🍅</span>
+        <div class="seed-header-info">
+          <div class="seed-name">Hybrid Tomato Seeds</div>
+          <div class="seed-variety">Variety: Arka Vikas · 100g pack</div>
+        </div>
+        <span class="seed-badge">SELL</span>
+      </div>
+      <div class="seed-card-body">
+        <div class="seed-detail-row"><span class="seed-detail-label">📍 Location</span><span class="seed-detail-val">Shirdi, MH · 12 km</span></div>
+        <div class="seed-detail-row"><span class="seed-detail-label">💰 Price</span><span class="seed-detail-val">₹ 180 per 100g</span></div>
+        <div class="seed-detail-row"><span class="seed-detail-label">🌱 Germination</span><span class="seed-detail-val">92%</span></div>
+        <div class="seed-detail-row"><span class="seed-detail-label">👤 Seller</span><span class="seed-detail-val">Sanjay Patil · ⭐ 4.7</span></div>
+      </div>
+      <div class="seed-card-footer">
+        <button class="btn btn-primary" id="btn-contact-1" aria-label="Contact seller">📞 Contact</button>
+        <button class="btn btn-secondary" id="btn-save-1" aria-label="Save listing">🔖 Save</button>
+      </div>
+    </article>
+
+    <!-- Card 2 -->
+    <article class="seed-card" aria-label="HD-2967 Wheat Seeds listing">
+      <div class="seed-card-header">
+        <span class="seed-emoji">🌾</span>
+        <div class="seed-header-info">
+          <div class="seed-name">HD-2967 Wheat Seeds</div>
+          <div class="seed-variety">Certified · 5 kg bag</div>
+        </div>
+        <span class="seed-badge" style="background:var(--sky);">SWAP</span>
+      </div>
+      <div class="seed-card-body">
+        <div class="seed-detail-row"><span class="seed-detail-label">📍 Location</span><span class="seed-detail-val">Kopargaon, MH · 28 km</span></div>
+        <div class="seed-detail-row"><span class="seed-detail-label">🔄 Exchange for</span><span class="seed-detail-val">Onion or Soybean seeds</span></div>
+        <div class="seed-detail-row"><span class="seed-detail-label">🌱 Germination</span><span class="seed-detail-val">88%</span></div>
+        <div class="seed-detail-row"><span class="seed-detail-label">👤 Seller</span><span class="seed-detail-val">Priya Deshmukh · ⭐ 4.9</span></div>
+      </div>
+      <div class="seed-card-footer">
+        <button class="btn btn-sky" id="btn-contact-2" aria-label="Contact seller">📞 Contact</button>
+        <button class="btn btn-secondary" id="btn-save-2" aria-label="Save listing">🔖 Save</button>
+      </div>
+    </article>
+
+    <!-- Card 3 -->
+    <article class="seed-card" aria-label="Nasik Red Onion Seeds listing">
+      <div class="seed-card-header">
+        <span class="seed-emoji">🧅</span>
+        <div class="seed-header-info">
+          <div class="seed-name">Nasik Red Onion Seeds</div>
+          <div class="seed-variety">Open pollinated · 250g</div>
+        </div>
+        <span class="seed-badge" style="background:var(--green-light);">FREE</span>
+      </div>
+      <div class="seed-card-body">
+        <div class="seed-detail-row"><span class="seed-detail-label">📍 Location</span><span class="seed-detail-val">Nashik, MH · 41 km</span></div>
+        <div class="seed-detail-row"><span class="seed-detail-label">💰 Price</span><span class="seed-detail-val" style="color:var(--green-dark);">FREE (self-collect)</span></div>
+        <div class="seed-detail-row"><span class="seed-detail-label">🌱 Germination</span><span class="seed-detail-val">79%</span></div>
+        <div class="seed-detail-row"><span class="seed-detail-label">👤 Donor</span><span class="seed-detail-val">Kavita Shinde · ⭐ 4.5</span></div>
+      </div>
+      <div class="seed-card-footer">
+        <button class="btn btn-primary" id="btn-contact-3" aria-label="Contact donor">📞 Contact</button>
+        <button class="btn btn-secondary" id="btn-save-3" aria-label="Save listing">🔖 Save</button>
+      </div>
+    </article>
+
+    <div style="padding: 10px 14px;">
+      <button class="btn btn-amber" id="btn-post-listing" aria-label="Post your own seed listing">
+        ➕ Post Your Seeds
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<!-- Bottom navigation -->
+<nav class="bottom-nav" aria-label="Main navigation">
+  <button class="nav-item active" id="nav-home"     onclick="showScreen('home')"   aria-label="Home">
+    <span class="nav-icon">🏠</span><span>Home</span>
+  </button>
+  <button class="nav-item" id="nav-diagnose"        onclick="showScreen('upload')" aria-label="Diagnose">
+    <span class="nav-icon">🔬</span><span>Diagnose</span>
+  </button>
+  <button class="nav-item" id="nav-soil"            onclick="showScreen('soil')"   aria-label="Soil">
+    <span class="nav-icon">🧪</span><span>Soil</span>
+  </button>
+  <button class="nav-item" id="nav-seeds"           onclick="showScreen('seeds')"  aria-label="Seeds">
+    <span class="nav-icon">🫘</span><span>Seeds</span>
+  </button>
+</nav>
+
+<script>
+  const navMap = { home:'home', upload:'diagnose', result:'diagnose', soil:'soil', seeds:'seeds' };
+  const tabMap = { home:'tab-home', upload:'tab-upload', result:'tab-result', soil:'tab-soil', seeds:'tab-seeds' };
+
+  function showScreen(id) {
+    ['home','upload','result','soil','seeds'].forEach(s => {
+      document.getElementById('screen-' + s).classList.remove('active');
+      const t = document.getElementById('tab-' + s);
+      if (t) t.classList.remove('active');
+    });
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+    document.getElementById('screen-' + id).classList.add('active');
+    const tab = document.getElementById(tabMap[id]);
+    if (tab) tab.classList.add('active');
+    const nav = document.getElementById('nav-' + navMap[id]);
+    if (nav) nav.classList.add('active');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Filter chips
+  document.querySelectorAll('.fchip').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.fchip').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed','false'); });
+      c.classList.add('active'); c.setAttribute('aria-pressed','true');
+    });
+  });
+
+  // Drag-and-drop visual
+  const dz = document.getElementById('dropzone');
+  if (dz) {
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.background = '#b8ddc0'; });
+    dz.addEventListener('dragleave', () => { dz.style.background = ''; });
+    dz.addEventListener('drop', e => {
+      e.preventDefault(); dz.style.background = '';
+      dz.innerHTML = '<span style="font-size:2.5rem;">✅</span><span style="font-weight:700;color:var(--green-dark);">Photo loaded! Tap Analyse Now.</span>';
+    });
+  }
+</script>
+</body>
+</html>

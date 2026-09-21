@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.env
+.venv/
+venv/
+ENV/
+
+# Databases & local uploads
+*.db
+*.sqlite3
+uploads/
+backend/diagnoses/
+
+# Trained ML models (large binary files – regenerated on first run)
+backend/models_ml/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env.local
+*.pem
